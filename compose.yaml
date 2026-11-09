@@ -1,0 +1,88 @@
+services:
+  hub:
+    image: de-jupyterhub:local
+    container_name: de-hub
+
+    command:
+      - jupyterhub
+      - -f
+      - /etc/jupyterhub/jupyterhub_config.py
+
+    ports:
+      - "127.0.0.1:8000:8000"
+
+    volumes:
+      - ./jupyterhub/jupyterhub_config.py:/etc/jupyterhub/jupyterhub_config.py:ro
+
+      - /var/run/docker.sock:/var/run/docker.sock
+
+      - hub_data:/srv/jupyterhub
+
+    networks:
+      - de-network
+
+    restart: unless-stopped
+  
+  spark-master:
+    image: de-spark:s3a
+    container_name: de-spark-master
+
+    entrypoint:
+      - /opt/spark/bin/spark-class
+
+    command:
+      - org.apache.spark.deploy.master.Master
+      - --host
+      - spark-master
+      - --port
+      - "7077"
+      - --webui-port
+      - "8080"
+
+    ports:
+      - "127.0.0.1:8082:8080"
+
+    mem_limit: 1g
+
+    networks:
+      - de-network
+
+    restart: unless-stopped
+
+  spark-worker:
+    image: de-spark:s3a
+    container_name: de-spark-worker
+
+    entrypoint:
+      - /opt/spark/bin/spark-class
+
+    command:
+      - org.apache.spark.deploy.worker.Worker
+      - --host
+      - spark-worker
+      - --cores
+      - "4"
+      - --memory
+      - 6g
+      - --webui-port
+      - "8081"
+      - spark://spark-master:7077
+
+    depends_on:
+      - spark-master
+
+    mem_limit: 7g
+    cpus: 4
+
+    networks:
+      - de-network
+
+    restart: unless-stopped
+    
+volumes:
+  hub_data:
+
+networks:
+  de-network:
+    name: de-sandbox-net
+    driver: bridge

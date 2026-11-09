@@ -1,0 +1,27 @@
+# Secrets
+.env
+.env.*
+!.env.example
+
+# Python
+__pycache__/
+*.py[cod]
+.pytest_cache/
+.ipynb_checkpoints/
+
+# Jupyter
+.jupyter/
+
+# IDE
+.idea/
+.vscode/
+
+# Local files
+*.log
+
+# Maven
+target/
+.m2/
+
+# Downloaded dependencies
+spark/dependencies/vendor/
