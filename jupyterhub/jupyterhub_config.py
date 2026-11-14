@@ -20,16 +20,27 @@ c.JupyterHub.db_url = "sqlite:////srv/jupyterhub/jupyterhub.sqlite"
 # Авторизация (только локальный тест)
 # -------------------------
 
-c.JupyterHub.authenticator_class = "dummy"
+# Авторизация через логин и пароль
+c.JupyterHub.authenticator_class = "native"
 
-c.DummyAuthenticator.password = "local-test-only"
+# Администратор
+c.Authenticator.admin_users = {"admin"}
 
-c.Authenticator.allowed_users = {
-    "student1",
-    "student2",
-    "student3",
-    "admin",
-}
+# Новые пользователи должны пройти проверку NativeAuthenticator
+c.Authenticator.allow_all = True
+c.Authenticator.allow_existing_users = False
+
+# Регистрация доступна, но требуется подтверждение
+c.NativeAuthenticator.enable_signup = True
+c.NativeAuthenticator.open_signup = False
+
+# Пароли и защита от перебора
+c.NativeAuthenticator.minimum_password_length = 12
+c.NativeAuthenticator.allowed_failed_logins = 5
+c.NativeAuthenticator.seconds_before_next_try = 600
+# c.Authenticator.allowed_users = {
+#     "admin",
+# }
 
 c.Authenticator.admin_users = {"admin"}
 
@@ -45,6 +56,10 @@ c.DockerSpawner.network_name = "de-sandbox-net"
 c.DockerSpawner.use_internal_ip = True
 
 c.DockerSpawner.name_template = "de-{username}"
+
+c.DockerSpawner.environment = {
+    "SPARK_LOCAL_HOSTNAME": lambda spawner: spawner.name,
+}
 
 # Удаляем контейнер после остановки,
 # но пользовательские файлы сохраняем.

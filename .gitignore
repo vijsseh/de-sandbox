@@ -24,4 +24,4 @@ target/
 .m2/
 
 # Downloaded dependencies
-spark/dependencies/vendor/
+spark/dependencies/vendor/  

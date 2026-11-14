@@ -36,6 +36,8 @@ COPY --from=dependencies /build/jars/hadoop-aws-3.5.0.jar /usr/local/spark/jars/
 COPY --from=dependencies /build/jars/bundle-2.35.4.jar /usr/local/spark/jars/
 COPY --from=dependencies /build/jars/analyticsaccelerator-s3-1.3.1.jar /usr/local/spark/jars/
 COPY --from=dependencies /build/jars/wildfly-openssl-2.2.5.Final.jar /usr/local/spark/jars/
+# Общие настройки Spark для студенческих контейнеров
+COPY spark/config/spark-defaults.conf /usr/local/spark/conf/spark-defaults.conf
 
 USER ${NB_UID}
 

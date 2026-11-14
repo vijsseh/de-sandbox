@@ -1,6 +1,6 @@
 services:
   hub:
-    image: de-jupyterhub:local
+    image: de-jupyterhub:native-test
     container_name: de-hub
 
     command:
